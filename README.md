@@ -33,6 +33,10 @@ The API runs on `http://217.182.69.62:3000`. It provides:
 The SQLite database is created at `data/clalan.sqlite` on first start. Passwords
 are hashed with bcrypt and are never stored in plain text.
 
+For VPS deployment, set `CLIENT_ORIGIN` in `.env` to the exact URL used to open
+the frontend, for example `http://217.182.69.62:4200`. Multiple frontend URLs
+can be separated with commas.
+
 ## Development server
 
 To start a local development server, run:
