@@ -61,10 +61,17 @@ const gameDataSchema = z.object({
 });
 
 const app = new Hono<{ Variables: { user: AuthUser } }>();
-const configuredOrigins = process.env['CLIENT_ORIGIN'] ?? '*';
-const allowedOrigins = configuredOrigins.split(',')
+const configuredOrigins = process.env['CLIENT_ORIGIN'] ?? '';
+const allowedOrigins = [
+  ...configuredOrigins.split(','),
+  'http://localhost:4200',
+  'http://127.0.0.1:4200',
+  'http://217.182.69.62:4200',
+  'http://217.182.69.62',
+]
   .map((origin) => origin.trim())
-  .filter(Boolean);
+  .filter(Boolean)
+  .map((origin) => origin.replace(/\/$/, ''));
 
 app.use(
   '*',
