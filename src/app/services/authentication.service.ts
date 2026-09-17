@@ -54,7 +54,10 @@ type ApiError = {
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
-  private readonly apiUrl = 'http://217.182.69.62:3000';
+  private readonly apiUrl =
+    typeof window === 'undefined'
+      ? 'http://localhost:3000'
+      : `${window.location.protocol}//${window.location.hostname}:3000`;
   private readonly tokenKey = 'clalan_token';
   private readonly http = inject(HttpClient);
   private readonly storage = inject(LocalStorageService);

@@ -35,7 +35,8 @@ are hashed with bcrypt and are never stored in plain text.
 
 For VPS deployment, set `CLIENT_ORIGIN` in `.env` to the exact URL used to open
 the frontend, for example `http://217.182.69.62:4200`. Multiple frontend URLs
-can be separated with commas.
+can be separated with commas. Use `CLIENT_ORIGIN=*` if the frontend is served
+from the same VPS through changing ports or a reverse proxy.
 
 ## Development server
 
