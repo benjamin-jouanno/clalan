@@ -45,11 +45,17 @@ export class DashboardPage implements OnInit, OnDestroy {
   protected readonly getRaceImage = (race: string | null): string =>
     this.raceImages[race ?? ''] ?? 'human.png';
   private countdownTimer?: ReturnType<typeof setInterval>;
+  private postsRefreshTimer?: ReturnType<typeof setInterval>;
 
   ngOnInit(): void {
     void this.loadAccount();
     void this.authenticationService.getGuildMembers();
     void this.authenticationService.getPosts();
+    this.postsRefreshTimer = setInterval(() => {
+      if (!this.postBusy) {
+        void this.authenticationService.getPosts();
+      }
+    }, 5000);
     this.updateCountdown();
     this.countdownTimer = setInterval(() => this.updateCountdown(), 1000);
   }
@@ -145,6 +151,9 @@ export class DashboardPage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.countdownTimer) {
       clearInterval(this.countdownTimer);
+    }
+    if (this.postsRefreshTimer) {
+      clearInterval(this.postsRefreshTimer);
     }
   }
 
