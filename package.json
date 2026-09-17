@@ -1,0 +1,52 @@
+{
+  "name": "clalan",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "start:api": "tsx server/index.ts",
+    "start:all": "nx run-many --target=serve --projects=frontend,backend --parallel=2",
+    "typecheck:api": "tsc --noEmit -p tsconfig.server.json",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
+  },
+  "private": true,
+  "packageManager": "npm@11.13.0",
+  "dependencies": {
+    "@angular/common": "^22.1.0",
+    "@angular/compiler": "^22.1.0",
+    "@angular/core": "^22.1.0",
+    "@angular/forms": "^22.1.0",
+    "@angular/platform-browser": "^22.1.0",
+    "@angular/router": "^22.1.0",
+    "@fontsource/press-start-2p": "^5.3.0",
+    "@hono/node-server": "^2.1.1",
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^13.0.3",
+    "dotenv": "^17.4.2",
+    "drizzle-orm": "^0.45.2",
+    "hono": "^4.13.8",
+    "jose": "^6.2.12",
+    "pixelarticons": "^2.4.1",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@angular/build": "^22.1.4",
+    "@angular/cli": "^22.1.4",
+    "@angular/compiler-cli": "^22.1.0",
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/node": "^22.20.3",
+    "drizzle-kit": "^0.31.10",
+    "jsdom": "^28.0.0",
+    "nx": "^22.7.12",
+    "prettier": "^3.8.1",
+    "tsx": "^4.23.13",
+    "typescript": "~6.0.2",
+    "vitest": "^4.0.8"
+  }
+}

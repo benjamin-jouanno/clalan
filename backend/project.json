@@ -1,0 +1,11 @@
+{
+  "name": "backend",
+  "targets": {
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm run start:api"
+      }
+    }
+  }
+}

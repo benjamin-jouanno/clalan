@@ -1,0 +1,139 @@
+<main class="dashboard-page">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img src="/assets/logo.png" alt="WoW Forever LAN Party" />
+    </div>
+
+    <nav aria-label="Navigation principale">
+      <a class="nav-item active" href="#accueil"><i class="pixelart-icons-font-home"></i>Accueil</a>
+      <a class="nav-item" href="#joueurs"><i class="pixelart-icons-font-users"></i>Joueurs</a>
+      <a class="nav-item" href="#personnages"><i class="pixelart-icons-font-user"></i>Personnages</a>
+      <a class="nav-item" href="#planning"><i class="pixelart-icons-font-calendar"></i>Planning</a>
+      <a class="nav-item" href="#ressources"><i class="pixelart-icons-font-package"></i>Ressources</a>
+    </nav>
+
+    <div class="sidebar-foot">06 — 11 NOV 2026<br /><span>TOULOUSE · THE BASEMENT HQ</span></div>
+  </aside>
+
+  <section class="dashboard-content">
+    <header class="topbar">
+      <span class="mobile-title">CLALAN</span>
+      <div class="topbar-user">
+        <span class="notification"><i class="pixelart-icons-font-bell"></i></span>
+        <span class="avatar">⚔</span>
+        <strong>{{ authenticationService.currentUser()?.username ?? 'Aventurier' }}</strong>
+        <button type="button" aria-label="Menu utilisateur">⌄</button>
+      </div>
+    </header>
+
+    <section class="welcome-banner">
+      <div>
+        <p class="eyebrow"><i class="pixelart-icons-font-sparkles"></i> Le campement est ouvert</p>
+        <h1>Bienvenue, {{ authenticationService.currentUser()?.username ?? 'Aventurier' }} !</h1>
+        <p>La guilde se réunit dans <strong>{{ countdown().days }} jours</strong> !</p>
+      </div>
+      <div class="event-meta">
+        <i class="pixelart-icons-font-calendar"></i>
+        <span><b>06 — 11 Nov 2026</b>Blagnac<br />Chez Pétou</span>
+      </div>
+    </section>
+
+    <div class="dashboard-grid">
+      <article class="hud-card profile-card">
+        <h2>Mon personnage</h2>
+        <div class="profile-body">
+          <div class="character-art">
+            <img *ngIf="authenticationService.account()?.gameData?.race as selectedRace" [src]="'/assets/races/' + raceImages[selectedRace]" [alt]="selectedRace" />
+            <span *ngIf="!authenticationService.account()?.gameData?.race">✧</span>
+          </div>
+          <div>
+            <h3>{{ authenticationService.account()?.gameData?.characterName ?? 'Aventurier' }}</h3>
+            <p>{{ authenticationService.account()?.gameData?.race ?? 'Race non renseignée' }}</p>
+            <strong>{{ authenticationService.account()?.gameData?.className ?? 'Classe non renseignée' }}</strong>
+            <p>Rôle : {{ authenticationService.account()?.gameData?.role ?? 'Non renseigné' }}</p>
+            <small>Depuis le {{ authenticationService.account()?.createdAt | date: 'dd/MM/yyyy' }}</small>
+            <button type="button" class="outline-button" (click)="editGameData()">Modifier</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="hud-card players-card">
+        <header class="card-heading"><h2>Les membres de la guilde ({{ authenticationService.guildMembers().length }})</h2></header>
+        <ul class="player-list">
+          <li *ngFor="let member of authenticationService.guildMembers()">
+            <span class="player-avatar"><img [src]="'/assets/races/' + getRaceImage(member.gameData.race)" [alt]="member.gameData.race ?? 'Race'" /></span>
+            <span><b>{{ member.username }}</b><small class="member-class">{{ member.gameData.className }}</small></span>
+          </li>
+          <li *ngIf="authenticationService.guildMembers().length === 0" class="empty-members">Aucun membre renseigné</li>
+        </ul>
+      </article>
+
+      <article class="hud-card countdown-card">
+        <h2>Compte à rebours</h2>
+        <div class="countdown"><span>{{ countdown().days | number: '2.0-0' }}<small>Jours</small></span><span>{{ countdown().hours | number: '2.0-0' }}<small>Heures</small></span><span>{{ countdown().minutes | number: '2.0-0' }}<small>Minutes</small></span><span>{{ countdown().seconds | number: '2.0-0' }}<small>Secondes</small></span></div>
+      </article>
+
+    </div>
+
+    <section class="posts-section">
+      <header class="posts-heading"><h2>La vie de la guilde</h2><span>Partage tes aventures avec les membres</span></header>
+      <form class="post-composer" (ngSubmit)="createPost()">
+        <textarea [(ngModel)]="newPostContent" name="newPostContent" maxlength="2000" placeholder="Écris un message à la guilde..." aria-label="Nouveau post"></textarea>
+        <button type="submit" [disabled]="postBusy || !newPostContent.trim()">Publier</button>
+      </form>
+      <div class="post-feed">
+        <article class="post-card" *ngFor="let post of authenticationService.posts()">
+          <header class="post-author">
+            <span class="post-icons">
+              <img [src]="'/assets/races/' + getRaceImage(post.author.gameData.race)" [alt]="post.author.gameData.race ?? 'Race'" />
+              <img [src]="'/assets/class/' + (classImages[post.author.gameData.className ?? ''] ?? 'guerrier.png')" [alt]="post.author.gameData.className ?? 'Classe'" />
+            </span>
+            <span><b>{{ post.author.username }}</b><small>({{ post.author.gameData.className }} · {{ post.author.gameData.role }})</small></span>
+            <time>{{ post.createdAt | date: 'dd/MM/yyyy HH:mm' }}</time>
+            <button
+              *ngIf="post.author.id === authenticationService.currentUser()?.id"
+              type="button"
+              class="delete-post"
+              (click)="deletePost(post.id)"
+              [disabled]="postBusy"
+            >Supprimer</button>
+          </header>
+          <p class="post-content">{{ post.content }}</p>
+          <footer class="post-actions">
+            <button type="button" [class.upvoted]="post.viewerUpvote" (click)="toggleUpvote(post.id)">▲ {{ post.upvotes }}</button>
+            <span>{{ post.comments.length }} commentaire{{ post.comments.length === 1 ? '' : 's' }}</span>
+          </footer>
+          <div class="comments" *ngIf="post.comments.length">
+            <p *ngFor="let comment of visibleComments(post.comments, post.id)"><b>{{ comment.author.username }}</b> {{ comment.content }}</p>
+            <button
+              *ngIf="post.comments.length > 3"
+              type="button"
+              class="comments-toggle"
+              (click)="toggleComments(post.id)"
+            >
+              {{ expandedComments[post.id] ? 'Réduire les commentaires' : 'Afficher tous les commentaires' }}
+            </button>
+          </div>
+          <form class="comment-form" (ngSubmit)="addComment(post.id)">
+            <input [(ngModel)]="commentDrafts[post.id]" [name]="'comment-' + post.id" maxlength="1000" placeholder="Ajouter un commentaire..." />
+            <button type="submit" [disabled]="postBusy || !(commentDrafts[post.id] ?? '').trim()">Envoyer</button>
+          </form>
+        </article>
+        <p class="empty-posts" *ngIf="authenticationService.posts().length === 0">La guilde n'a pas encore publié de message.</p>
+      </div>
+    </section>
+
+    <button type="button" class="logout-button" (click)="logout()">Se déconnecter</button>
+  </section>
+</main>
+<app-game-data-modal *ngIf="showGameDataModal()" [initialGameData]="authenticationService.account()?.gameData ?? null" (saved)="closeGameDataModal()" (cancelled)="closeGameDataModal()"></app-game-data-modal>
+    <div class="confirmation-backdrop" *ngIf="deletePostId !== null" (click)="cancelDeletePost()">
+      <section class="confirmation-modal" role="dialog" aria-modal="true" aria-labelledby="delete-post-title" (click)="$event.stopPropagation()">
+        <h2 id="delete-post-title">Supprimer le message ?</h2>
+        <p>Cette action supprimera définitivement ce post et ses commentaires.</p>
+        <div class="confirmation-actions">
+          <button type="button" class="confirmation-cancel" (click)="cancelDeletePost()" [disabled]="postBusy">Annuler</button>
+          <button type="button" class="confirmation-delete" (click)="confirmDeletePost()" [disabled]="postBusy">Supprimer</button>
+        </div>
+      </section>
+    </div>

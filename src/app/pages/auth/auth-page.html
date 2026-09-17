@@ -1,0 +1,79 @@
+<main class="auth-page">
+  <header class="brand">
+    <img class="brand-logo" src="/assets/logo.png" alt="WoW Forever LAN Party" />
+  </header>
+
+  <section class="auth-panels">
+    <article class="auth-card">
+      <div class="card-ornament" aria-hidden="true">✦</div>
+
+      <ng-container *ngIf="!isRegistering; else registerPanel">
+        <h1>Connexion</h1>
+        <p class="card-intro">Rejoignez la guilde pour l'aventure !</p>
+
+        <form (ngSubmit)="submitLogin()" #loginForm="ngForm">
+          <label for="login-identifier"><i class="pixelart-icons-font-mail" aria-hidden="true"></i> Email ou nom d'utilisateur</label>
+          <input id="login-identifier" name="loginIdentifier" type="text" placeholder="Email ou nom d'utilisateur"
+            [(ngModel)]="loginIdentifier" autocomplete="username" required />
+
+          <label for="login-password"><i class="pixelart-icons-font-lock" aria-hidden="true"></i> Mot de passe</label>
+          <input id="login-password" name="loginPassword" type="password" placeholder="Mot de passe"
+            [(ngModel)]="loginPassword" autocomplete="current-password" minlength="8" required />
+
+          <div class="form-options">
+            <label class="check-label"><input type="checkbox" name="rememberMe" [(ngModel)]="rememberMe" /> <span>Se souvenir de moi</span></label>
+            <button type="button" class="text-button">Mot de passe oublié ?</button>
+          </div>
+
+          <button class="gold-button" type="submit" [disabled]="loginForm.invalid || isSubmitting">
+            <i class="pixelart-icons-font-key" aria-hidden="true"></i> Se connecter
+          </button>
+        </form>
+
+        <p class="switch-prompt">Pas encore de compte ? <button type="button" class="switch-link" (click)="switchMode()">Créer un compte</button></p>
+      </ng-container>
+
+      <ng-template #registerPanel>
+        <h1>Créer un compte</h1>
+        <p class="card-intro">Un nouveau héros rejoint l'aventure !</p>
+
+        <form (ngSubmit)="submitRegistration()" #registerForm="ngForm">
+          <label for="username"><i class="pixelart-icons-font-user" aria-hidden="true"></i> Nom d'utilisateur</label>
+          <input id="username" name="username" type="text" placeholder="Nom d'utilisateur"
+            [(ngModel)]="username" autocomplete="username" minlength="3" maxlength="24"
+            pattern="[a-zA-Z0-9_-]+" required />
+
+          <label for="email"><i class="pixelart-icons-font-mail" aria-hidden="true"></i> Email</label>
+          <input id="email" name="email" type="email" placeholder="Email"
+            [(ngModel)]="email" autocomplete="email" required />
+
+          <label for="register-password"><i class="pixelart-icons-font-lock" aria-hidden="true"></i> Mot de passe</label>
+          <input id="register-password" name="password" type="password" placeholder="Mot de passe"
+            [(ngModel)]="password" autocomplete="new-password" minlength="8" required />
+
+          <label for="confirm-password"><i class="pixelart-icons-font-shield" aria-hidden="true"></i> Confirmer le mot de passe</label>
+          <input id="confirm-password" name="confirmPassword" type="password" placeholder="Confirmer le mot de passe"
+            [(ngModel)]="confirmPassword" autocomplete="new-password" minlength="8" required />
+
+          <label class="check-label terms"><input type="checkbox" name="terms" ngModel required /> <span>J'accepte de <a href="#" (click)="$event.preventDefault()">tourner au white monster toute la lan</a><br /></span></label>
+
+          <button class="gold-button" type="submit" [disabled]="registerForm.invalid || isSubmitting">
+            <i class="pixelart-icons-font-sparkles" aria-hidden="true"></i> Créer mon compte
+          </button>
+        </form>
+
+        <p class="switch-prompt">Déjà un compte ? <button type="button" class="switch-link" (click)="switchMode()">Se connecter</button></p>
+      </ng-template>
+    </article>
+  </section>
+
+  <p *ngIf="errorMessage" class="message error" role="alert">{{ errorMessage }}</p>
+  <p *ngIf="successMessage" class="message success" role="status">{{ successMessage }}</p>
+
+  <footer class="features">
+    <div><strong class="pixelart-icons-font-user"></strong><b>DES AMIS</b><span>Une même guilde</span></div>
+    <div><strong class="pixelart-icons-font-sword"></strong><b>DES QUÊTES</b><span>Des sessions épiques</span></div>
+    <div><strong class="pixelart-icons-font-coffee"></strong><b>DU BON TEMPS</b><span>Rires et LAN</span></div>
+    <div><strong class="pixelart-icons-font-heart"></strong><b>DES SOUVENIRS</b><span>Pour toujours</span></div>
+  </footer>
+</main>

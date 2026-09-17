@@ -1,0 +1,57 @@
+<div class="modal-backdrop">
+  <section class="game-data-modal" role="dialog" aria-modal="true" aria-labelledby="game-data-title">
+    <p class="eyebrow">Fiche d’aventurier</p>
+    <h2 id="game-data-title">Présente ton personnage</h2>
+    <p class="step-indicator">Étape {{ step }} sur 5</p>
+    <p class="intro">Complète ces informations pour rejoindre la guilde.</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="wizard-step" *ngIf="step === 1">
+        <h3>Choisis ta faction</h3>
+        <div class="faction-grid" role="radiogroup" aria-label="Choisir une faction">
+          <button type="button" class="faction-card" *ngFor="let faction of factions" [class.selected]="form.controls.faction.value === faction.value" (click)="selectFaction(faction.value)" role="radio" [attr.aria-checked]="form.controls.faction.value === faction.value">
+            <span class="faction-emblem"><img [src]="'/assets/factions/' + faction.image" [alt]="faction.label" /></span>
+            <span>{{ faction.label }}</span>
+          </button>
+        </div>
+      </div>
+      <div class="wizard-step" *ngIf="step === 2">
+        <h3>Choisis ta race</h3>
+        <div class="race-grid" role="radiogroup" aria-label="Choisir une race">
+          <button type="button" class="race-card" *ngFor="let race of availableRaces" [class.selected]="form.controls.race.value === race.value" (click)="selectRace(race.value)" role="radio" [attr.aria-checked]="form.controls.race.value === race.value">
+            <span class="race-emblem"><img [src]="'/assets/races/' + race.image" [alt]="race.label" /></span>
+            <span class="race-name">{{ race.label }}</span>
+          </button>
+        </div>
+      </div>
+      <div class="wizard-step" *ngIf="step === 3">
+        <h3>Choisis ta classe</h3>
+        <div class="class-grid" role="radiogroup" aria-label="Choisir une classe">
+          <button type="button" class="class-card" *ngFor="let classOption of availableClasses" [class.selected]="form.controls.className.value === classOption.value" (click)="selectClass(classOption.value)" role="radio" [attr.aria-checked]="form.controls.className.value === classOption.value">
+            <span class="class-emblem"><img [src]="'/assets/class/' + classOption.image" [alt]="classOption.label" /></span>
+            <span class="class-name">{{ classOption.label }}</span>
+          </button>
+        </div>
+      </div>
+      <div class="wizard-step" *ngIf="step === 4">
+        <h3>Choisis ton rôle</h3>
+        <fieldset><legend>Rôle</legend>
+          <label class="role-option" *ngFor="let role of availableRoles">
+            <input type="radio" formControlName="role" [value]="role" /> {{ role | uppercase }}
+          </label>
+        </fieldset>
+      </div>
+      <div class="wizard-step" *ngIf="step === 5">
+        <h3>Nomme ton personnage</h3>
+        <label>Nom du personnage<input formControlName="characterName" maxlength="24" placeholder="Ex. Thalorien" /></label>
+      </div>
+      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+      <div class="wizard-actions">
+        <button type="button" class="secondary-button" *ngIf="step === 1" (click)="cancel()">Annuler</button>
+        <button type="button" class="secondary-button" *ngIf="step > 1" (click)="previousStep()">Retour</button>
+        <button type="button" *ngIf="step < 5" (click)="nextStep()">Suivant</button>
+        <button type="submit" *ngIf="step === 5" [disabled]="saving">{{ saving ? 'Enregistrement...' : 'Enregistrer le personnage' }}</button>
+      </div>
+    </form>
+  </section>
+</div>
