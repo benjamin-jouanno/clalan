@@ -14,7 +14,7 @@ and JWT authentication.
 npm run start:api
 ```
 
-The API runs on `http://localhost:3000`. It provides:
+The API runs on `http://217.182.69.62:3000`. It provides:
 
 - `GET /health`
 - `POST /auth/register`
